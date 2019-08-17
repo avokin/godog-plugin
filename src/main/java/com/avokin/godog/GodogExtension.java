@@ -2,16 +2,13 @@ package com.avokin.godog;
 
 import com.goide.GoFileType;
 import com.goide.psi.*;
-import com.goide.stubs.index.GoMethodIndex;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,10 +20,9 @@ import org.jetbrains.plugins.cucumber.steps.AbstractStepDefinition;
 
 import java.util.*;
 
-public class GodogExtension extends AbstractCucumberExtension {
-    private static final String GODOG_SUITE_FQN = "godog.Suite";
-    private static final String GODOG_SUITE_STEP_FQN = "Suite.Step";
+import static com.avokin.godog.GodogUtil.findSuiteStepMethodDeclaration;
 
+public class GodogExtension extends AbstractCucumberExtension {
     @Override
     public boolean isStepLikeFile(@NotNull PsiElement child, @NotNull PsiElement parent) {
         return parent instanceof PsiDirectory && child instanceof GoFile;
@@ -62,7 +58,7 @@ public class GodogExtension extends AbstractCucumberExtension {
 
     @Override
     public List<AbstractStepDefinition> loadStepsFor(@Nullable PsiFile psiFile, @NotNull Module module) {
-        GoMethodDeclaration godogStepMethod = findSuiteStepMethodDeclaration(module.getProject());
+        GoMethodDeclaration godogStepMethod = psiFile != null ? findSuiteStepMethodDeclaration(psiFile) : null;
         if (godogStepMethod == null) {
             return Collections.emptyList();
         }
@@ -82,19 +78,6 @@ public class GodogExtension extends AbstractCucumberExtension {
         }
 
         return result;
-    }
-
-    private static GoMethodDeclaration findSuiteStepMethodDeclaration(@NotNull Project project) {
-        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-        Collection<GoMethodDeclaration> suiteMethods = GoMethodIndex.find(GODOG_SUITE_FQN, project, scope, null);
-
-        for (GoMethodDeclaration godogStepMethodCandidate : suiteMethods) {
-            String qualifiedName = godogStepMethodCandidate.getQualifiedName();
-            if (qualifiedName != null && qualifiedName.equals(GODOG_SUITE_STEP_FQN)) {
-                return godogStepMethodCandidate;
-            }
-        }
-        return null;
     }
 
     @Override
@@ -117,6 +100,5 @@ public class GodogExtension extends AbstractCucumberExtension {
             }
         }
         return result;
-
     }
 }
