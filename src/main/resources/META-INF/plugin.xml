@@ -1,0 +1,17 @@
+<idea-plugin>
+    <id>godog</id>
+    <name>Godog</name>
+    <vendor email="andrey.vokin@gmail.com" url="https://www.jetbrains.com">JetBrains</vendor>
+
+    <depends>gherkin</depends>
+    <depends>org.jetbrains.plugins.go</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.modules.platform</depends>
+    <description><![CDATA[
+    Provides integration with Godog - Cucumber BDD framework for Golang
+    ]]></description>
+
+    <extensions defaultExtensionNs="org.jetbrains.plugins.cucumber.steps">
+        <cucumberJvmExtensionPoint implementation="com.avokin.godog.GodogExtension"/>
+    </extensions>
+</idea-plugin>

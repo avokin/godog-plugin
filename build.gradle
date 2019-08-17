@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij' version '0.4.9'
+}
+
+group 'gradle-plugin'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven { url 'https://plugins.jetbrains.com/maven' }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+// See https://github.com/JetBrains/gradle-intellij-plugin/
+intellij {
+    version '2019.2'
+    type 'IU'
+    plugins=["org.jetbrains.plugins.go:192.5728.12.238", "gherkin:192.5728.12"]
+}
+
+test {
+    useJUnit {
+
+    }
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
+runIde {
+    // Path to installed v2019.1.2 PhpStorm to use as IDE Development Instance
+    ideaDirectory '/Applications/GoLand.app/Contents'
+}
+patchPluginXml {
+    changeNotes """
+      Add change notes here.<br>
+      <em>most HTML tags may be used</em>"""
+}
