@@ -1,17 +1,19 @@
 package com.avokin.godog;
 
-import com.goide.psi.GoFile;
-import com.goide.psi.GoMethodDeclaration;
-import com.goide.psi.GoSimpleStatement;
+import com.goide.psi.*;
 import com.goide.psi.impl.GoElementFactory;
+import com.goide.util.Value;
 import com.google.common.collect.Iterables;
+import com.intellij.codeInsight.template.TemplateBuilderFactory;
+import com.intellij.codeInsight.template.TemplateBuilderImpl;
 import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiReference;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.*;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -73,8 +75,47 @@ public class GoStepDefinitionCreator extends AbstractStepDefinitionCreator {
             return false;
         }
 
-        anchor.getParent().addAfter(stepDefinition, anchor);
+        PsiElement addedStepDefinition = anchor.getParent().addAfter(stepDefinition, anchor);
+        GoCallExpr stepDefinitionCall = PsiTreeUtil.findChildOfType(addedStepDefinition, GoCallExpr.class);
+        assert stepDefinitionCall != null;
+        runTemplateOnAddedStepDefinition(stepDefinitionCall);
         return true;
+    }
+
+    private void runTemplateOnAddedStepDefinition(@NotNull GoCallExpr call) {
+        Project project = call.getProject();
+
+        OpenFileDescriptor openFileDescriptor = new OpenFileDescriptor(project, call.getContainingFile().getVirtualFile(), 0);
+        Editor editor = FileEditorManager.getInstance(project).openTextEditor(openFileDescriptor, true);
+        assert editor != null;
+
+        closeActiveTemplateBuilders(call.getContainingFile());
+
+        TemplateBuilderImpl builder = (TemplateBuilderImpl) TemplateBuilderFactory.getInstance().createTemplateBuilder(call);
+
+        // template over regex
+        GoStringLiteral regexpElement = PsiTreeUtil.findChildOfType(call, GoStringLiteral.class);
+        assert regexpElement != null;
+        Value regexpElementValue = regexpElement.getValue();
+        assert regexpElementValue != null;
+        String regexpText = regexpElementValue.getString();
+        TextRange rangeInRegexpLiteral = new TextRange(1, regexpElement.getTextLength() - 1);
+        builder.replaceElement(regexpElement, rangeInRegexpLiteral, regexpText);
+
+        // template over argument list
+        Collection<GoParamDefinition> parameters = PsiTreeUtil.findChildrenOfType(call, GoParamDefinition.class);
+        for (GoParamDefinition parameter : parameters) {
+            PsiElement nameIdentifier = parameter.getNameIdentifier();
+            assert nameIdentifier != null;
+            builder.replaceElement(nameIdentifier, TextRange.create(0, nameIdentifier.getTextLength()), parameter.getName());
+        }
+
+        GoReturnStatement returnStatement = PsiTreeUtil.findChildOfType(call, GoReturnStatement.class);
+        assert returnStatement != null;
+        builder.setEndVariableBefore(returnStatement);
+
+        PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+        builder.run(editor, false);
     }
 
     @Override
