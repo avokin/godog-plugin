@@ -1,5 +1,6 @@
 package com.avokin.godog;
 
+import com.goide.psi.GoFile;
 import com.goide.psi.GoMethodDeclaration;
 import com.goide.psi.GoSimpleStatement;
 import com.goide.psi.impl.GoElementFactory;
@@ -20,6 +21,7 @@ import org.jetbrains.plugins.cucumber.psi.GherkinStep;
 
 import java.util.Collection;
 
+import static com.avokin.godog.GodogSnippetGenerator.STEP_DEFINITION_FILE_TEMPLATE;
 import static com.avokin.godog.GodogSnippetGenerator.buildStepDefinitionDeclaration;
 
 public class GoStepDefinitionCreator extends AbstractStepDefinitionCreator {
@@ -44,29 +46,35 @@ public class GoStepDefinitionCreator extends AbstractStepDefinitionCreator {
         }
         LocalSearchScope scope = new LocalSearchScope(psiFile);
         Collection<PsiReference> fileStepDefinitions = ReferencesSearch.search(godogStepMethod, scope).findAll();
+        PsiElement anchor;
         if (fileStepDefinitions.size() == 0) {
-            // Create template
-            return false;
+            GoFile stepDefinitionFile = GoElementFactory.createFileFromText(gherkinStep.getProject(), STEP_DEFINITION_FILE_TEMPLATE);
+            for (PsiElement element : stepDefinitionFile.getChildren()) {
+                psiFile.add(element);
+            }
+
+            anchor = psiFile.findElementAt(stepDefinitionFile.getText().indexOf("{"));
+            assert anchor != null;
         } else {
-            String snippet = buildStepDefinitionDeclaration(gherkinStep.getName());
-            PsiElement stepDefinition = GoElementFactory.createCallExpression(psiFile.getProject(), snippet);
-            stepDefinition = PsiTreeUtil.getParentOfType(stepDefinition, GoSimpleStatement.class);
-            if (stepDefinition == null) {
-                LOG.error("Failed to create step definition");
-                return false;
-            }
-
             PsiReference lastStepDefinitionReference = Iterables.getLast(fileStepDefinitions);
-            PsiElement lastStepDefinition = lastStepDefinitionReference.getElement().getParent();
-            lastStepDefinition = PsiTreeUtil.getParentOfType(lastStepDefinition, GoSimpleStatement.class);
-            if (lastStepDefinition == null) {
+            anchor = lastStepDefinitionReference.getElement().getParent();
+            anchor = PsiTreeUtil.getParentOfType(anchor, GoSimpleStatement.class);
+            if (anchor == null) {
                 LOG.error("Failed to create step definition");
                 return false;
             }
-
-            lastStepDefinition.getParent().addAfter(stepDefinition, lastStepDefinition);
-            return true;
         }
+
+        String snippet = buildStepDefinitionDeclaration(gherkinStep.getName());
+        PsiElement stepDefinition = GoElementFactory.createCallExpression(psiFile.getProject(), snippet);
+        stepDefinition = PsiTreeUtil.getParentOfType(stepDefinition, GoSimpleStatement.class);
+        if (stepDefinition == null) {
+            LOG.error("Failed to create step definition");
+            return false;
+        }
+
+        anchor.getParent().addAfter(stepDefinition, anchor);
+        return true;
     }
 
     @Override

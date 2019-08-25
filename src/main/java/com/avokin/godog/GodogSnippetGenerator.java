@@ -15,6 +15,16 @@ public class GodogSnippetGenerator {
 
     private static final String ALL_TYPES = Arrays.stream(PARAMETER_REGEX).map(s -> "(" + s + ")").collect(Collectors.joining("|"));
 
+    static final String STEP_DEFINITION_FILE_TEMPLATE =
+            "package main\n" +
+            "\n" +
+            "import (\n" +
+            "  \"github.com/DATA-DOG/godog\"\n" +
+            ")\n" +
+            "\n" +
+            "func FeatureContext(s *godog.Suite) {\n" +
+            "}\n";
+
     @NotNull
     public static String buildStepDefinitionDeclaration(@NotNull String stepName) {
         String stepRegexp = StringUtil.escapeToRegex(stepName);
