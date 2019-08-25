@@ -11,4 +11,9 @@ public class StringUtilTest {
         assertEquals("I have 9 cucumber\\(s)", StringUtil.escapeToRegex("I have 9 cucumber(s)"));
         assertEquals("I have 9\\$", StringUtil.escapeToRegex("I have 9$"));
     }
+
+    @Test
+    public void testEscapeSlashes() {
+        assertEquals("\\\\d+\\\\.\\\\d+", StringUtil.escapeSlashes("\\d+\\.\\d+"));
+    }
 }

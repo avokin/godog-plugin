@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 public class StringUtil {
     private static final String CHARS_MUST_BE_ESCAPED_IN_REGEX = "([\\^$";
 
+    @NotNull
     public static String escapeToRegex(@NotNull String text) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; text.length() > i; i++) {
@@ -16,6 +17,11 @@ public class StringUtil {
         }
 
         return result.toString();
+    }
+
+    @NotNull
+    public static String escapeSlashes(@NotNull String text) {
+        return text.replaceAll("\\\\", "\\\\\\\\");
     }
 
     private static boolean isSurroundedByDigits(@NotNull String text, int offset) {
