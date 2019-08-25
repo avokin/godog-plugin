@@ -77,6 +77,6 @@ public class GoStepDefinitionCreator extends AbstractStepDefinitionCreator {
     @Override
     public @NotNull
     String getDefaultStepFileName(@NotNull GherkinStep gherkinStep) {
-        return "my_steps.go";
+        return "godog_test";
     }
 }
