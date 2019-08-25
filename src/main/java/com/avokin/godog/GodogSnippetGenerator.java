@@ -50,7 +50,7 @@ public class GodogSnippetGenerator {
             count++;
         }
         result.append(") error {\n" +
-                "  return nil\n" +
+                "  return godog.ErrPending\n" +
                 "}");
         return result.toString();
     }
