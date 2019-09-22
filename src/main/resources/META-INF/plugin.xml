@@ -14,4 +14,7 @@
     <extensions defaultExtensionNs="org.jetbrains.plugins.cucumber.steps">
         <cucumberJvmExtensionPoint implementation="com.avokin.godog.GodogExtension"/>
     </extensions>
+    <extensions defaultExtensionNs="com.intellij">
+        <runConfigurationProducer implementation="com.avokin.godog.run.GodogRunConfigurationProducer"/>
+    </extensions>
 </idea-plugin>

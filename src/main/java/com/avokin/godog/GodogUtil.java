@@ -9,6 +9,8 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.module.Module;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -21,6 +23,15 @@ class GodogUtil {
         return CachedValuesManager.getCachedValue(file,
                 () -> CachedValueProvider.Result.create(doFindSuiteStepMethodDeclaration(file.getProject()), file)
         );
+    }
+
+    static boolean isGodogEnabledForModule(@Nullable Module module) {
+        if (module == null) {
+            return false;
+        }
+        // ToDo: cache, use module scope
+        GoMethodDeclaration result = doFindSuiteStepMethodDeclaration(module.getProject());
+        return result != null;
     }
 
     private static GoMethodDeclaration doFindSuiteStepMethodDeclaration(@NotNull Project project) {

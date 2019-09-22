@@ -1,6 +1,7 @@
 package com.avokin.godog;
 
 import com.goide.GoFileType;
+import com.goide.execution.testing.GoTestFramework;
 import com.goide.psi.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -23,6 +24,10 @@ import java.util.*;
 import static com.avokin.godog.GodogUtil.findSuiteStepMethodDeclaration;
 
 public class GodogExtension extends AbstractCucumberExtension {
+    static {
+        GoTestFramework.all().add(GodogFramework.INSTANCE);
+    }
+
     @Override
     public boolean isStepLikeFile(@NotNull PsiElement child, @NotNull PsiElement parent) {
         return parent instanceof PsiDirectory && child instanceof GoFile;
