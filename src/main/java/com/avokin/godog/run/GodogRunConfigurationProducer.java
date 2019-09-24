@@ -29,7 +29,7 @@ public class GodogRunConfigurationProducer extends GoTestRunConfigurationProduce
             return false;
         }
         if (element.getContainingFile() instanceof GherkinFile) {
-            VirtualFile file = ((GherkinFile) element).getVirtualFile();
+            VirtualFile file = element.getContainingFile().getVirtualFile();
             String directoryPath = file.getParent().getPath();
             configuration.setTestFramework(GodogFramework.INSTANCE);
             configuration.setFilePathsString(file.getPath());
