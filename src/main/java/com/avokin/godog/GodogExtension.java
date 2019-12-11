@@ -55,12 +55,6 @@ public class GodogExtension extends AbstractCucumberExtension {
         return new GoStepDefinitionCreator();
     }
 
-    @NotNull
-    @Override
-    public Collection<String> getGlues(@NotNull GherkinFile gherkinFile, Set<String> set) {
-        return Collections.emptySet();
-    }
-
     @Override
     public List<AbstractStepDefinition> loadStepsFor(@Nullable PsiFile psiFile, @NotNull Module module) {
         GoMethodDeclaration godogStepMethod = psiFile != null ? findSuiteStepMethodDeclaration(psiFile) : null;
