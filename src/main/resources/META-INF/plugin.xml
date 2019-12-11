@@ -12,9 +12,9 @@
     ]]></description>
 
     <extensions defaultExtensionNs="org.jetbrains.plugins.cucumber.steps">
-        <cucumberJvmExtensionPoint implementation="com.avokin.godog.GodogExtension"/>
+        <cucumberJvmExtensionPoint implementation="com.goide.execution.testing.frameworks.godog.GodogExtension"/>
     </extensions>
     <extensions defaultExtensionNs="com.intellij">
-        <runConfigurationProducer implementation="com.avokin.godog.run.GodogRunConfigurationProducer"/>
+        <runConfigurationProducer implementation="com.goide.execution.testing.frameworks.godog.run.GodogRunConfigurationProducer"/>
     </extensions>
 </idea-plugin>

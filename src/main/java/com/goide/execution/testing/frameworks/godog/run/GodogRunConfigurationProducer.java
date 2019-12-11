@@ -1,6 +1,6 @@
-package com.avokin.godog.run;
+package com.goide.execution.testing.frameworks.godog.run;
 
-import com.avokin.godog.GodogFramework;
+import com.goide.execution.testing.frameworks.godog.GodogFramework;
 import com.goide.execution.GoRunUtil;
 import com.goide.execution.testing.GoTestRunConfiguration;
 import com.goide.execution.testing.GoTestRunConfigurationProducerBase;

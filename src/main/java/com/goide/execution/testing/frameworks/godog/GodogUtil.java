@@ -1,4 +1,4 @@
-package com.avokin.godog;
+package com.goide.execution.testing.frameworks.godog;
 
 import com.goide.psi.GoMethodDeclaration;
 import com.goide.stubs.index.GoMethodIndex;

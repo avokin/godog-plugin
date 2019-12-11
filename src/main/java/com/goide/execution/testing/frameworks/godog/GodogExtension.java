@@ -1,4 +1,4 @@
-package com.avokin.godog;
+package com.goide.execution.testing.frameworks.godog;
 
 import com.goide.GoFileType;
 import com.goide.execution.testing.GoTestFramework;
@@ -21,7 +21,7 @@ import org.jetbrains.plugins.cucumber.steps.AbstractStepDefinition;
 
 import java.util.*;
 
-import static com.avokin.godog.GodogUtil.findSuiteStepMethodDeclaration;
+import static com.goide.execution.testing.frameworks.godog.GodogUtil.findSuiteStepMethodDeclaration;
 
 public class GodogExtension extends AbstractCucumberExtension {
     static {

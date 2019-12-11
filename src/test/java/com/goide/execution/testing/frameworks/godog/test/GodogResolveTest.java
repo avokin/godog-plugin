@@ -1,4 +1,4 @@
-package com.avokin.godog.test;
+package com.goide.execution.testing.frameworks.godog.test;
 
 import com.goide.psi.GoStringLiteral;
 import com.intellij.openapi.application.PathManager;

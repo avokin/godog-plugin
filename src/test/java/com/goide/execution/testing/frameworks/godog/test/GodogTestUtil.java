@@ -1,4 +1,4 @@
-package com.avokin.godog.test;
+package com.goide.execution.testing.frameworks.godog.test;
 
 import com.intellij.util.io.URLUtil;
 import org.jetbrains.annotations.NotNull;

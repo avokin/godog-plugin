@@ -1,4 +1,4 @@
-package com.avokin.godog;
+package com.goide.execution.testing.frameworks.godog;
 
 import com.goide.psi.*;
 import com.goide.psi.impl.GoElementFactory;
@@ -22,9 +22,6 @@ import org.jetbrains.plugins.cucumber.AbstractStepDefinitionCreator;
 import org.jetbrains.plugins.cucumber.psi.GherkinStep;
 
 import java.util.Collection;
-
-import static com.avokin.godog.GodogSnippetGenerator.STEP_DEFINITION_FILE_TEMPLATE;
-import static com.avokin.godog.GodogSnippetGenerator.buildStepDefinitionDeclaration;
 
 public class GoStepDefinitionCreator extends AbstractStepDefinitionCreator {
     private final static Logger LOG = Logger.getInstance(GoStepDefinitionCreator.class);
@@ -50,7 +47,7 @@ public class GoStepDefinitionCreator extends AbstractStepDefinitionCreator {
         Collection<PsiReference> fileStepDefinitions = ReferencesSearch.search(godogStepMethod, scope).findAll();
         PsiElement anchor;
         if (fileStepDefinitions.size() == 0) {
-            GoFile stepDefinitionFile = GoElementFactory.createFileFromText(gherkinStep.getProject(), STEP_DEFINITION_FILE_TEMPLATE);
+            GoFile stepDefinitionFile = GoElementFactory.createFileFromText(gherkinStep.getProject(), GodogSnippetGenerator.STEP_DEFINITION_FILE_TEMPLATE);
             for (PsiElement element : stepDefinitionFile.getChildren()) {
                 psiFile.add(element);
             }
@@ -67,7 +64,7 @@ public class GoStepDefinitionCreator extends AbstractStepDefinitionCreator {
             }
         }
 
-        String snippet = buildStepDefinitionDeclaration(gherkinStep.getName());
+        String snippet = GodogSnippetGenerator.buildStepDefinitionDeclaration(gherkinStep.getName());
         PsiElement stepDefinition = GoElementFactory.createCallExpression(psiFile.getProject(), snippet);
         stepDefinition = PsiTreeUtil.getParentOfType(stepDefinition, GoSimpleStatement.class);
         if (stepDefinition == null) {

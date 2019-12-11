@@ -1,6 +1,6 @@
-package com.avokin.godog;
+package com.goide.execution.testing.frameworks.godog;
 
-import com.avokin.godog.run.GodogRunningState;
+import com.goide.execution.testing.frameworks.godog.run.GodogRunningState;
 import com.goide.execution.testing.GoTestFramework;
 import com.goide.execution.testing.GoTestRunConfiguration;
 import com.goide.execution.testing.GoTestRunningState;
@@ -15,8 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.cucumber.psi.GherkinFileType;
 
-import static com.avokin.godog.GodogUtil.isGodogEnabledForModule;
-
 public class GodogFramework extends GoTestFramework {
     public static final GodogFramework INSTANCE = new GodogFramework();
 
@@ -28,7 +26,7 @@ public class GodogFramework extends GoTestFramework {
 
     @Override
     public boolean isAvailable(@Nullable Module module) {
-        return isGodogEnabledForModule(module);
+        return GodogUtil.isGodogEnabledForModule(module);
     }
 
     @Override

@@ -1,6 +1,6 @@
-package com.avokin.godog.test;
+package com.goide.execution.testing.frameworks.godog.test;
 
-import com.avokin.godog.GodogSnippetGenerator;
+import com.goide.execution.testing.frameworks.godog.GodogSnippetGenerator;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
